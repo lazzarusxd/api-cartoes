@@ -138,7 +138,7 @@ class Responses:
                     "application/json": {
                         "example": {
                             "detail": [
-                                "Erro. Não foram informados dados a serem atualizados.",
+                                "Nenhum campo para atualizar foi fornecido.",
                                 "O nome do titular não pode ser uma string vazia.",
                                 "O nome do titular deve ser composto apenas por letras.",
                                 "Endereço inválido. O endereço não pode ser vazio.",
@@ -158,6 +158,29 @@ class Responses:
                     "application/json": {
                         "example": {
                             "detail": "Cartão não encontrado, verifique o UUID."
+                        }
+                    }
+                }
+            }
+        }
+
+        campos_invalidos = {
+            422: {
+                "description": "Erro. Atributo não encontrado.",
+                "content": {
+                    "application/json": {
+                        "example": {
+                            "detail": [
+                                {
+                                    "type": "extra_forbidden",
+                                    "loc": [
+                                        "body",
+                                        "statu"
+                                    ],
+                                    "msg": "Extra inputs are not permitted",
+                                    "input": "ATIVO"
+                                }
+                            ]
                         }
                     }
                 }

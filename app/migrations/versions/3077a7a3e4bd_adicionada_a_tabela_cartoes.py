@@ -1,8 +1,8 @@
-"""Criada a tabela cartoes.
+"""Adicionada a tabela cartoes.
 
-Revision ID: 1de005df7ced
+Revision ID: 3077a7a3e4bd
 Revises: 
-Create Date: 2024-11-04 22:52:41.192636
+Create Date: 2024-11-08 23:42:49.952518
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '1de005df7ced'
+revision: str = '3077a7a3e4bd'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
