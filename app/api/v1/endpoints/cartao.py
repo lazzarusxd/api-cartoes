@@ -70,7 +70,8 @@ async def cartoes_por_cpf(
     responses={
         **Responses.AtualizarDados.sucesso,
         **Responses.AtualizarDados.uuid_invalido,
-        **Responses.AtualizarDados.erros_validacao
+        **Responses.AtualizarDados.erros_validacao,
+        **Responses.AtualizarDados.campos_invalidos
     }
 )
 async def atualizar_dados(

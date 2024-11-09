@@ -3,7 +3,7 @@ from uuid import UUID
 from typing import List, Optional
 
 from fastapi import HTTPException, status
-from pydantic import BaseModel, field_validator, Field
+from pydantic import BaseModel, field_validator, Field, Extra
 from pytz import timezone
 
 from app.models.cartao_model import CartaoModel, StatusEnum
@@ -224,6 +224,7 @@ class CartaoUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+        extra = Extra.forbid
 
     @field_validator("endereco", mode="before")
     def validator_endereco(cls, v):

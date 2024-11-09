@@ -81,6 +81,12 @@ class CartaoServices:
         }
 
     async def atualizar_info(self, dados_atualizados: CartaoUpdate, uuid: UUID) -> dict:
+        if not dados_atualizados.model_dump(exclude_unset=True):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Nenhum campo para atualizar foi fornecido."
+            )
+
         query1 = await self.db.execute(
             select(CartaoModel).where(
                 and_(
