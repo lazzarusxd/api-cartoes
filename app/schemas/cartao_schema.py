@@ -3,13 +3,13 @@ from uuid import UUID
 from typing import List, Optional
 
 from fastapi import HTTPException, status
-from pydantic import BaseModel, field_validator, Field, Extra
+from pydantic import BaseModel, field_validator, Field
 from pytz import timezone
 
 from app.models.cartao_model import CartaoModel, StatusEnum
 
 
-class CriarCartao(BaseModel):
+class CartaoRequest(BaseModel):
     titular_cartao: str = Field(
         title="Nome completo do titular",
         description="Nome completo do titular do cartão.",
@@ -78,7 +78,22 @@ class CriarCartao(BaseModel):
         return v
 
 
-class CartaoCriadoResponse(CriarCartao):
+class CartaoRequestResponse(BaseModel):
+    titular_cartao: str = Field(
+        title="Nome completo do titular",
+        description="Nome completo do titular do cartão.",
+        examples=["JOAO DA SILVA"]
+    )
+    cpf_titular: str = Field(
+        title="CPF do titular",
+        description="CPF do titular do cartão.",
+        examples=["12345678912"]
+    )
+    endereco: str = Field(
+        title="Endereço do titular",
+        description="Endereço completo do titular do cartão.",
+        examples=["RUA DA FELICIDADE, BAIRRO ALEGRIA"]
+    )
     status: StatusEnum = Field(
         title="Status do cartão",
         description="Status atual do cartão."
@@ -89,7 +104,7 @@ class CartaoCriadoResponse(CriarCartao):
     )
 
     @classmethod
-    def from_model(cls, cartao: CartaoModel) -> "CartaoCriadoResponse":
+    def from_model(cls, cartao: CartaoModel) -> "CartaoRequestResponse":
         return cls(
             titular_cartao=cartao.titular_cartao,
             cpf_titular=cartao.cpf_titular,
@@ -108,7 +123,7 @@ class CartaoResponseWrapper(BaseModel):
         title="Mensagem de resposta",
         description="Mensagem que descreve o resultado da operação."
     )
-    data: CartaoCriadoResponse = Field(
+    data: CartaoRequestResponse = Field(
         title="Dados do cartão criado",
         description="Dados do cartão que foi criado."
     )
@@ -224,7 +239,7 @@ class CartaoUpdate(BaseModel):
 
     class Config:
         from_attributes = True
-        extra = Extra.forbid
+        extra = "forbid"
 
     @field_validator("endereco", mode="before")
     def validator_endereco(cls, v):

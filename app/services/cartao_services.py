@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.cartao_model import CartaoModel, StatusEnum
 from app.database.base import get_session
-from app.schemas.cartao_schema import (CriarCartao, CartaoResponse, CartaoCriadoResponse, CartaoUpdate,
+from app.schemas.cartao_schema import (CartaoRequest, CartaoResponse, CartaoRequestResponse, CartaoUpdate,
                                        CartoesPorCpfResponse, CartaoTransferir, CartaoRecarga)
 
 
@@ -16,7 +16,7 @@ class CartaoServices:
     def __init__(self, db: AsyncSession = Depends(get_session)):
         self.db = db
 
-    async def solicitar_cartao(self, dados_cartao: CriarCartao) -> dict:
+    async def solicitar_cartao(self, dados_cartao: CartaoRequest) -> dict:
         query = await self.db.execute(
             select(CartaoModel).where(
                 and_(
@@ -55,7 +55,7 @@ class CartaoServices:
         return {
             "status_code": status.HTTP_201_CREATED,
             "message": "Cartão criado com sucesso.",
-            "data": CartaoCriadoResponse.from_model(cartao)
+            "data": CartaoRequestResponse.from_model(cartao)
         }
 
     async def cartoes_por_cpf(self, cpf_titular: str) -> dict:
