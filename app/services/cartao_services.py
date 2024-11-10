@@ -7,8 +7,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.cartao_model import CartaoModel, StatusEnum
 from app.database.base import get_session
-from app.schemas.cartao_schema import (CartaoRequest, CartaoResponse, CartaoRequestResponse, CartaoUpdate,
-                                       CartoesPorCpfResponse, CartaoTransferir, CartaoRecarga)
+from app.schemas.cartao_schema import (
+    CartaoRequest,
+    CartaoResponse,
+    CartaoRequestResponse,
+    CartaoUpdate,
+    CartoesPorCpfResponse,
+    CartaoTransferir,
+    CartaoRecarga
+)
 
 
 class CartaoServices:

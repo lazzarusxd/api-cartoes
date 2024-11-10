@@ -1,7 +1,11 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.core.configs import settings
 from app.api.v1.api import router
+
+load_dotenv()
+
 app = FastAPI(
     title="API de Gerenciamento de Cartões",
     description="""

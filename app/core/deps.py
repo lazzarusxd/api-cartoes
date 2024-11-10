@@ -21,6 +21,7 @@ credential_exception = HTTPException(
     }
 )
 
+
 async def validar_token_cartao(
         db: AsyncSession,
         token: str,

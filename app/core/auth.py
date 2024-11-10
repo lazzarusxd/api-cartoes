@@ -8,6 +8,7 @@ from app.core.configs import settings
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1}")
 
+
 def _criar_token(tipo_token: str, tempo_vida: timedelta, sub: str) -> str:
     sp = timezone("America/Sao_Paulo")
     expira = datetime.now(tz=sp) + tempo_vida
