@@ -10,9 +10,9 @@ class Responses:
                             "status_code": 201,
                             "message": "Cartão criado com sucesso.",
                             "data": {
-                                "titular_cartao": "JOSE DA SILVA",
-                                "cpf_titular": "23948273849",
-                                "endereco": "RUA II, S/N, BAIRRO TRINTA",
+                                "titular_cartao": "JOAO DA SILVA",
+                                "cpf_titular": "12345678912",
+                                "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
                                 "status": "EM_ANALISE",
                                 "token": "eyJhbGckpXVCJ9.eyJ0eXBlDM3MDA00.tVmBVYdL3iKNgR4yn6t7xj9"
                             }
