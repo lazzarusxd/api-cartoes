@@ -68,32 +68,54 @@ api-cartoes/
    git clone https://github.com/lazzarusxd/api-cartoes.git
    ```
 
+
 2- Navegue até o diretório do projeto:
    ```bash
    cd api-cartoes
    ```
 
-3- Crie as imagens no Docker:
+
+3- Crie e execute os containers Docker necessários:
    ```bash
-   docker build -t api-cartoes .
+   docker-compose up --build
    ```
 
-4- Instale as dependências no seu ambiente de desenvolvimento usando Poetry:
+
+4- Crie seu ambiente de desenvolvimento e instale as dependências usando Poetry:
    ```bash
-   docker exec -it api-cartoes-app-1 poetry install
+   poetry install
    ```
 
-5- Crie e execute os containers Docker:
+
+5- Execute seu ambiente de desenvolvimento com as dependências usando Poetry:
    ```bash
-   docker-compose up -d
+   poetry shell
    ```
 
+  
 6- Crie a tabela no banco de dados usando Alembic:
    ```bash
    docker exec -it api-cartoes-app-1 poetry run alembic upgrade head
    ```
 
-7- Realizar a requisição desejada, conforme próximo tópico (Endpoints).
+
+7- Configure o interpretador Python na sua IDE:
+- Caso seu ambiente de desenvolvimento tenha sido criado no WSL, selecione-o e escolha a opção "System Interpreter".
+  
+- Navegue até o diretório retornado no terminal após a execução do comando do Passo 5.
+  
+- Procure o executável do Python dentro do ambiente virtual.
+
+
+8- Realize as requisições desejadas conforme o próximo tópico (Endpoints):
+   - As informações de acesso aos serviços estão no arquivo .env.
+     
+   - Verifique as portas corretas dos serviços utilizando o aplicativo Docker Desktop ou o comando:
+
+      ```bash
+      docker ps
+      ```
+
 
 ## Endpoints
 
