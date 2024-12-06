@@ -29,7 +29,11 @@ async def solicitar_cartao(
         dados_cartao: CartaoRequest,
         cartao_services: CartaoServices = Depends()
 ) -> CartaoResponseWrapper:
-    cartao_response = await cartao_services.solicitar_cartao(dados_cartao)
+    cartao_response = await cartao_services.solicitar_cartao(
+        dados_cartao,
+        exchange="card_exchange",
+        routing_key="approval_rk"
+    )
 
     return CartaoResponseWrapper(
         status_code=cartao_response["status_code"],
