@@ -5,6 +5,8 @@ from sqlalchemy import and_
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.services.rabbitmq_consumer import RabbitmqConsumer
+from app.services.rabbitmq_publisher import RabbitmqPublisher
 from app.models.cartao_model import CartaoModel, StatusEnum
 from app.database.base import get_session
 from app.schemas.cartao_schema import (
@@ -23,7 +25,31 @@ class CartaoServices:
     def __init__(self, db: AsyncSession = Depends(get_session)):
         self.db = db
 
-    async def solicitar_cartao(self, dados_cartao: CartaoRequest) -> dict:
+    @staticmethod
+    def rabbitmq_consumer(queue_name: str):
+        queue = queue_name
+        if not queue:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Configuração do RabbitMQ inválida. Verifique as variáveis de ambiente."
+            )
+        rabbitmq_consumer = RabbitmqConsumer(queue)
+
+        return rabbitmq_consumer
+
+    @staticmethod
+    def rabbitmq_publisher(exchange: str, routing_key: str):
+        exchange, routing_key = exchange, routing_key
+        if not exchange or not routing_key:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Configuração do RabbitMQ inválida. Verifique as variáveis de ambiente."
+            )
+        rabbitmq_publisher = RabbitmqPublisher(exchange, routing_key)
+
+        return rabbitmq_publisher
+
+    async def solicitar_cartao(self, dados_cartao: CartaoRequest, exchange: str, routing_key: str) -> dict:
         query = await self.db.execute(
             select(CartaoModel).where(
                 and_(
@@ -52,6 +78,17 @@ class CartaoServices:
             self.db.add(cartao)
             await self.db.commit()
             await self.db.refresh(cartao)
+
+            rabbitmq_publisher = self.rabbitmq_publisher(exchange, routing_key)
+            await rabbitmq_publisher.send_message({
+                "action": "create_card",
+                "data": {
+                    "uuid": str(cartao.uuid),
+                    "titular_cartao": cartao.titular_cartao,
+                    "cpf_titular": cartao.cpf_titular,
+                    "endereco": cartao.endereco
+                }
+            })
         except Exception:
             await self.db.rollback()
             raise HTTPException(
