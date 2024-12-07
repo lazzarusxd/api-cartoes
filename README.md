@@ -110,7 +110,7 @@ api-cartoes/
 
 
 8- Realize as requisições desejadas conforme o próximo tópico (Endpoints):
-   - As informações de acesso aos serviços estão no arquivo .env.
+   - As informações sensíveis do arquivo ".env" são fictícias, portanto, solicite o arquivo original ou configure-o conforme suas necessidades.
      
    - Verifique as portas corretas dos serviços utilizando o aplicativo Docker Desktop ou o comando:
 
