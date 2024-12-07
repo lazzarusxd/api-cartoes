@@ -22,7 +22,8 @@ async def test_solicitar_cartao(mocker, client):
     dados_cartao = {
         "titular_cartao": "JOAO DA SILVA",
         "cpf_titular": "12345678912",
-        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     mock_cartao_service.return_value = {
@@ -57,7 +58,8 @@ async def test_solicitar_cartao_nome_titular_somente_letras(mocker, client):
     dados_cartao = {
         "titular_cartao": "JOAO DA SILV2",
         "cpf_titular": "12345678912",
-        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     mocker.patch(
@@ -79,7 +81,8 @@ async def test_solicitar_cartao_nome_vazio(mocker, client):
     dados_cartao = {
         "titular_cartao": "",
         "cpf_titular": "12345678912",
-        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     mocker.patch(
@@ -104,7 +107,34 @@ async def test_solicitar_cartao_endereco_vazio(mocker, client):
     dados_cartao = {
         "titular_cartao": "JOAO DA SILVA",
         "cpf_titular": "12345678912",
-        "endereco": ""
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": ""
+    }
+
+    mocker.patch(
+        "app.services.cartao_services.CartaoServices.solicitar_cartao",
+        side_effect=HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="E-mail é um campo obrigatório e não pode ser uma string vazia."
+        )
+    )
+
+    response = await client.post(
+        "/api/v1/cartoes/solicitar_cartao",
+        json=dados_cartao
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json()["detail"] == "E-mail é um campo obrigatório e não pode ser uma string vazia."
+
+
+@pytest.mark.asyncio
+async def test_solicitar_cartao_email_vazio(mocker, client):
+    dados_cartao = {
+        "titular_cartao": "JOAO DA SILVA",
+        "cpf_titular": "12345678912",
+        "endereco": "",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     mocker.patch(
@@ -129,7 +159,8 @@ async def test_solicitar_cartao_cpf_invalido_letras(mocker, client):
     dados_cartao = {
         "titular_cartao": "JOAO DA SILVA",
         "cpf_titular": "12345abc912",
-        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     mocker.patch(
@@ -154,7 +185,8 @@ async def test_solicitar_cartao_cpf_tamanho_invalido(mocker, client):
     dados_cartao = {
         "titular_cartao": "JOAO DA SILVA",
         "cpf_titular": "1234567",
-        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     mocker.patch(
@@ -179,7 +211,8 @@ async def test_solicitar_cartao_cpf_vazio(mocker, client):
     dados_cartao = {
         "titular_cartao": "JOÃO DA SILVA",
         "cpf_titular": "",
-        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     mocker.patch(
@@ -204,7 +237,8 @@ async def test_solicitar_cartao_cpf_nome_diferente():
     dados_cartao1 = {
         "titular_cartao": "JOAO DA SILVA",
         "cpf_titular": "12345678912",
-        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+        "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+        "email": "JOAODASILVA@EMAIL.COM"
     }
 
     dados_cartao2 = {
