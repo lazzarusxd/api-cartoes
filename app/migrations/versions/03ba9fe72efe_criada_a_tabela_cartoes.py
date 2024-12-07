@@ -1,8 +1,8 @@
-"""Adicionada a tabela cartoes.
+"""Criada a tabela cartoes
 
-Revision ID: 8751d7daf025
+Revision ID: 03ba9fe72efe
 Revises: 
-Create Date: 2024-11-09 23:24:39.693131
+Create Date: 2024-12-07 00:03:39.324619
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '8751d7daf025'
+revision: str = '03ba9fe72efe'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -26,6 +26,7 @@ def upgrade() -> None:
     sa.Column('titular_cartao', sa.String(), nullable=False),
     sa.Column('cpf_titular', sa.String(), nullable=False),
     sa.Column('status', sa.Enum('ATIVO', 'INATIVO', 'CANCELADO', 'BLOQUEADO', 'ENVIADO', 'EXPIRADO', 'EM_ANALISE', 'BLACKLISTED', name='statusenum'), nullable=False),
+    sa.Column('email', sa.String(), nullable=False),
     sa.Column('endereco', sa.String(), nullable=False),
     sa.Column('saldo', sa.Float(), nullable=False),
     sa.Column('numero_cartao', sa.String(), nullable=False),

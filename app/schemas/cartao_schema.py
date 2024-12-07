@@ -25,6 +25,11 @@ class CartaoRequest(BaseModel):
         description="Endereço completo do titular do cartão.",
         examples=["RUA DA FELICIDADE, BAIRRO ALEGRIA"]
     )
+    email: str = Field(
+        title="E-mail do titular",
+        description="E-mail do titular do cartão.",
+        examples=["JOAODASILVA@EMAIL.COM"]
+    )
 
     class Config:
         from_attributes = True
@@ -76,6 +81,18 @@ class CartaoRequest(BaseModel):
                 detail="O CPF deve conter exatamente 11 dígitos."
             )
         return v
+
+    @field_validator("email", mode="before")
+    def validator_email(cls, v):
+        if not v.strip():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="E-mail é um campo obrigatório e não pode ser uma string vazia."
+            )
+        v = " ".join(v.split())
+        return ''.join(
+            c for c in unicodedata.normalize('NFD', v) if unicodedata.category(c) != 'Mn'
+        )
 
 
 class CartaoRequestResponse(BaseModel):
@@ -146,6 +163,10 @@ class CartaoResponse(BaseModel):
         title="Status do cartão",
         description="Status atual do cartão."
     )
+    email: str = Field(
+        title="E-mail do titular",
+        description="E-mail do titular do cartão."
+    )
     endereco: str = Field(
         title="Endereço do titular",
         description="Endereço completo do titular do cartão."
@@ -185,6 +206,7 @@ class CartaoResponse(BaseModel):
             titular_cartao=cartao.titular_cartao,
             cpf_titular=cartao.cpf_titular,
             status=cartao.status,
+            email=cartao.email,
             endereco=cartao.endereco,
             saldo=cartao.saldo,
             numero_cartao=cartao.numero_cartao_descriptografado,
@@ -235,6 +257,12 @@ class CartaoUpdate(BaseModel):
         title="Status do cartão",
         description="Status atual do cartão.",
         examples=["ATIVO"]
+    )
+    email: Optional[str] = Field(
+        None,
+        title="E-mail do titular",
+        description="E-mail do titular do cartão",
+        examples=["JOAODASILVA@EMAIL.COM"]
     )
 
     class Config:
@@ -288,6 +316,18 @@ class CartaoUpdate(BaseModel):
                     detail="O status fornecido deve ser do tipo StatusEnum."
                 )
         return v
+
+    @field_validator("email", mode="before")
+    def validator_email(cls, v):
+        if not v.strip():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="E-mail é um campo obrigatório e não pode ser uma string vazia."
+            )
+        v = " ".join(v.split())
+        return ''.join(
+            c for c in unicodedata.normalize('NFD', v) if unicodedata.category(c) != 'Mn'
+        )
 
 
 class CartaoUpdateWrapper(BaseModel):

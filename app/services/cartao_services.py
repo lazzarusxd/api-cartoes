@@ -65,11 +65,17 @@ class CartaoServices:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="CPF já cadastrado para um titular diferente."
                 )
+            if usuario.email.upper() != dados_cartao.email.upper():
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="E-mail já cadastrado para um titular diferente."
+                )
 
         cartao = CartaoModel(
             titular_cartao=dados_cartao.titular_cartao.upper(),
             cpf_titular=dados_cartao.cpf_titular,
-            endereco=dados_cartao.endereco.upper()
+            endereco=dados_cartao.endereco.upper(),
+            email=dados_cartao.email.upper()
         )
 
         await cartao.initialize()
@@ -81,12 +87,12 @@ class CartaoServices:
 
             rabbitmq_publisher = self.rabbitmq_publisher(exchange, routing_key)
             await rabbitmq_publisher.send_message({
-                "action": "create_card",
+                "action": "send_card_to_approval",
                 "data": {
                     "uuid": str(cartao.uuid),
                     "titular_cartao": cartao.titular_cartao,
                     "cpf_titular": cartao.cpf_titular,
-                    "endereco": cartao.endereco
+                    "email": cartao.email
                 }
             })
         except Exception:
@@ -124,7 +130,7 @@ class CartaoServices:
             "data": CartoesPorCpfResponse(cartoes=cartoes_response),
         }
 
-    async def atualizar_info(self, dados_atualizados: CartaoUpdate, uuid: UUID) -> dict:
+    async def atualizar_dados(self, dados_atualizados: CartaoUpdate, uuid: UUID, queue: str) -> dict:
         if not dados_atualizados.model_dump(exclude_unset=True):
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -161,6 +167,10 @@ class CartaoServices:
 
         if dados_atualizados.status is not None:
             cartao.status = dados_atualizados.status
+
+            if dados_atualizados.status == StatusEnum.ATIVO:
+                consumer = self.rabbitmq_consumer(queue)
+                await consumer.consume_messages(cartao.uuid)
 
         try:
             await self.db.commit()
