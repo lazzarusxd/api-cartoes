@@ -13,9 +13,9 @@ app = FastAPI(
 
     Funcionalidades disponíveis:
 
-    - Solicitação de Cartão: Gera um novo cartão de crédito para um usuário, associando-o ao CPF e ao nome do titular fornecidos.
+    - Solicitação de Cartão: Gera um novo cartão para o usuário, associando-o ao CPF, e-mail e nome do titular. Ao solicitar o cartão, é publicada uma mensagem para a fila de aprovação no RabbitMQ, que será processada e consumida quando o status do cartão ser alterado para "ATIVO".
     - Listar Cartões por CPF: Recupera todos os cartões cadastrados no banco, associados ao CPF informado.
-    - Atualizar Dados do Cartão: Permite atualizar informações como o nome do titular, o endereço e o status (apenas do cartão do UUID), de todos os cartões vinculados ao UUID informado.
+    - Atualizar Dados do Cartão: Atualiza dados como o nome do titular, endereço, status e e-mail de um cartão específico identificado pelo UUID. Ao alterar o status do cartão para "ATIVO", a rota envia um e-mail ao titular do cartão, informando o sucesso na ativação.
     - Recarregar Cartão: Permite recarregar um cartão com um valor específico, informando o UUID do cartão a ser recarregado, desde o cartão esteja ativo.
     - Transferência de Saldo: Permite transferir saldo de um cartão para outro, desde que ambos os cartões estejam ativos e o saldo seja suficiente.
 

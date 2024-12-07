@@ -62,7 +62,11 @@ async def atualizar_dados(
         uuid: UUID = Depends(auth_atualizar_informacoes),
         cartao_services: CartaoServices = Depends()
 ) -> CartaoUpdateWrapper:
-    cartao_response = await cartao_services.atualizar_info(dados_atualizados, uuid)
+    cartao_response = await cartao_services.atualizar_dados(
+        dados_atualizados,
+        uuid,
+        queue="approval_queue"
+    )
 
     return CartaoUpdateWrapper(
         status_code=cartao_response["status_code"],

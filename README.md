@@ -6,9 +6,9 @@ Esta API oferece funcionalidades para o gerenciamento de cartões de crédito, p
 
 ## Funcionalidades
 
-- **Solicitação de Cartão:** Gera um novo cartão para o usuário, associando-o ao CPF e ao nome do titular.
-- **Listar Cartões por CPF:** Permite consultar todos os cartões cadastrados associados a um CPF específico.
-- **Atualização de Dados do Cartão:** Atualiza dados como o nome do titular, endereço e status de um cartão específico identificado pelo UUID.
+- **Solicitação de Cartão:** Gera um novo cartão para o usuário, associando-o ao CPF, e-mail e nome do titular. Ao solicitar o cartão, é publicada uma mensagem para a fila de aprovação no RabbitMQ, que será processada e consumida quando o status do cartão ser alterado para "ATIVO".
+- **Listar Cartões por CPF:** Permite consultar todos os cartões cadastrados e seus respectivos dados associados a um CPF específico.
+- **Atualização de Dados do Cartão:** Atualiza dados como o nome do titular, endereço, status e e-mail de um cartão específico identificado pelo UUID. Ao alterar o status do cartão para "ATIVO", a rota envia um e-mail ao titular do cartão, informando o sucesso na ativação.
 - **Recarregar Cartão:** Adiciona saldo ao cartão indicado pelo UUID, caso ele esteja ativo.
 - **Transferência de Saldo:** Facilita a transferência de saldo entre dois cartões ativos, desde que haja saldo suficiente.
 
@@ -47,7 +47,9 @@ api-cartoes/
 │   ├── schemas/
 │   │   └── cartao_schema.py
 │   ├── services/
-│   │   └── cartao_services.py
+│   │   ├── cartao_services.py
+│   │   ├── rabbitmq_consumer.py
+│   │   └── rabbitmq_publisher.py
 │   ├── alembic.ini
 │   └── main.py
 ├── tests/
@@ -115,6 +117,12 @@ api-cartoes/
       ```bash
       docker ps
       ```
+     
+   - Acesse o RabbitMQ Management no host e porta correspondentes, e faça a criação dos seguintes itens:
+     
+     - Crie uma exchange com o nome "card_exchange" do tipo direct.
+     - Crie uma queue com o nome "approval_queue" do tipo "default for virtual host", com o argumento "x-overflow" igual a "reject-publish". 
+     - Realize o binding da fila "approval_queue" com a exchange "card_exchange" utilizando a routing key "approval_rk".
 
 
 ## Endpoints
@@ -130,7 +138,8 @@ api-cartoes/
 {
   "titular_cartao": "JOAO DA SILVA",
   "cpf_titular": "12345678912",
-  "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA"
+  "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
+  "email": "JOAODASILVA@EMAIL.COM"
 }
 ```
 
@@ -174,6 +183,7 @@ URL http://localhost:8000/api/v1/cartoes/listar_cartoes/cpf/12345678912
         "titular_cartao": "JOAO DA SILVA",
         "cpf_titular": "12345678912",
         "status": "EM_ANALISE",
+        "email": "JOAODASILVA@EMAIL.COM",
         "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
         "saldo": 50,
         "numero_cartao": "1111222233334444",
@@ -187,6 +197,7 @@ URL http://localhost:8000/api/v1/cartoes/listar_cartoes/cpf/12345678912
         "titular_cartao": "JOAO DA SILVA",
         "cpf_titular": "12345678912",
         "status": "EM_ANALISE",
+        "email": "JOAODASILVA@EMAIL.COM",
         "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
         "saldo": 150,
         "numero_cartao": "4444333322221111",
@@ -212,7 +223,8 @@ URL http://localhost:8000/api/v1/cartoes/atualizar_dados/fb1d729b-46f7-4b2d-8b29
 {
   "titular_cartao": "JOAO DA SILVA",
   "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
-  "status": "ATIVO"
+  "status": "ATIVO",
+  "email": "JOAODASILVA22@EMAIL.COM"
 }
 ```
 
@@ -228,6 +240,7 @@ URL http://localhost:8000/api/v1/cartoes/atualizar_dados/fb1d729b-46f7-4b2d-8b29
       "titular_cartao": "JOAO DA SILVA",
       "cpf_titular": "12345678912",
       "status": "ATIVO",
+      "email": "JOAODASILVA22@EMAIL.COM",
       "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
       "saldo": 50,
       "numero_cartao": "4444333322221111",
@@ -266,6 +279,7 @@ URL http://localhost:8000/api/v1/cartoes/atualizar_dados/fb1d729b-46f7-4b2d-8b29
       "titular_cartao": "JOAO DA SILVA",
       "cpf_titular": "12345678912",
       "status": "ATIVO",
+      "email": "JOAODASILVA@EMAIL.COM",
       "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
       "saldo": 10,
       "numero_cartao": "4444333322221111",
@@ -305,6 +319,7 @@ URL http://localhost:8000/api/v1/cartoes/atualizar_dados/fb1d729b-46f7-4b2d-8b29
       "titular_cartao": "JOAO DA SILVA",
       "cpf_titular": "12345678912",
       "status": "ATIVO",
+      "email": "JOAODASILVA@EMAIL.COM",
       "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
       "saldo": 50,
       "numero_cartao": "4444333322221111",

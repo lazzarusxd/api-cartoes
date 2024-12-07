@@ -35,7 +35,8 @@ class Responses:
                                 "CPF é um campo obrigatório e não pode ser uma string vazia.",
                                 "O CPF deve conter apenas números.",
                                 "O CPF deve conter exatamente 11 dígitos.",
-                                "CPF já cadastrado para um titular diferente."
+                                "CPF já cadastrado para um titular diferente.",
+                                "E-mail é um campo obrigatório e não pode ser uma string vazia."
                             ]
                         }
                     }
@@ -59,6 +60,7 @@ class Responses:
                                         "titular_cartao": "JOAO DA SILVA",
                                         "cpf_titular": "12345678912",
                                         "status": "EM_ANALISE",
+                                        "email": "JOAODASILVA@EMAIL.COM",
                                         "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
                                         "saldo": 50.0,
                                         "numero_cartao": "1111222233334444",
@@ -72,6 +74,7 @@ class Responses:
                                         "titular_cartao": "JOAO DA SILVA",
                                         "cpf_titular": "12345678912",
                                         "status": "EM_ANALISE",
+                                        "email": "JOAODASILVA@EMAIL.COM",
                                         "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
                                         "saldo": 150.0,
                                         "numero_cartao": "4444333322221111",
@@ -116,6 +119,7 @@ class Responses:
                                     "titular_cartao": "JOAO DA SILVA",
                                     "cpf_titular": "12345678912",
                                     "status": "ATIVO",
+                                    "email": "JOAODASILVA@EMAIL.COM",
                                     "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
                                     "saldo": 50.0,
                                     "numero_cartao": "4444333322221111",
@@ -143,7 +147,8 @@ class Responses:
                                 "O nome do titular deve ser composto apenas por letras.",
                                 "Endereço inválido. O endereço não pode ser vazio.",
                                 "O status não pode ser uma string vazia.",
-                                "O status fornecido deve ser do tipo StatusEnum."
+                                "O status fornecido deve ser do tipo StatusEnum.",
+                                "E-mail é um campo obrigatório e não pode ser uma string vazia."
                             ]
                         }
                     }
@@ -202,6 +207,7 @@ class Responses:
                                     "titular_cartao": "JOAO DA SILVA",
                                     "cpf_titular": "12345678912",
                                     "status": "ATIVO",
+                                    "email": "JOAODASILVA@EMAIL.COM",
                                     "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
                                     "saldo": 10.0,
                                     "numero_cartao": "4444333322221111",
@@ -263,6 +269,7 @@ class Responses:
                                     "titular_cartao": "JOAO DA SILVA",
                                     "cpf_titular": "12345678912",
                                     "status": "ATIVO",
+                                    "email": "JOAODASILVA@EMAIL.COM",
                                     "endereco": "RUA DA FELICIDADE, BAIRRO ALEGRIA",
                                     "saldo": 50.0,
                                     "numero_cartao": "4444333322221111",

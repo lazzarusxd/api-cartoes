@@ -32,6 +32,7 @@ class CartaoModel(Base):
     titular_cartao = Column(String, index=True, nullable=False)
     cpf_titular = Column(String, index=True, nullable=False)
     status = Column(Enum(StatusEnum), nullable=False, default=StatusEnum.EM_ANALISE)
+    email = Column(String, nullable=False)
     endereco = Column(String, index=True, nullable=False)
     saldo = Column(Float, nullable=False, default=0)
     numero_cartao = Column(String, nullable=False, unique=True)
@@ -41,11 +42,12 @@ class CartaoModel(Base):
     token = Column(String, nullable=False)
     token_expiracao = Column(DateTime(timezone=True), nullable=False)
 
-    def __init__(self, titular_cartao, cpf_titular, endereco):
+    def __init__(self, titular_cartao, cpf_titular, endereco, email):
         super().__init__()
         self.titular_cartao = titular_cartao
         self.cpf_titular = cpf_titular
         self.endereco = endereco
+        self.email = email
 
     async def initialize(self):
         self.numero_cartao = await self.set_hash_cartao()
