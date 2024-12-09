@@ -55,7 +55,6 @@ api-cartoes/
 ├── tests/
 │   └── services/
 │       └── test_cartao_services.py
-├── .env
 ├── .gitignore
 ├── Dockerfile
 ├── README.md
@@ -110,7 +109,7 @@ api-cartoes/
 
 
 8- Realize as requisições desejadas conforme o próximo tópico (Endpoints):
-   - As informações sensíveis do arquivo ".env" são fictícias, portanto, solicite o arquivo original ou configure-o conforme suas necessidades.
+   - Solicite o arquivo original ".env" ou configure-o conforme suas necessidades.
      
    - Verifique as portas corretas dos serviços utilizando o aplicativo Docker Desktop ou o comando:
 
